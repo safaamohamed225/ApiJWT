@@ -13,8 +13,8 @@ namespace ApiJWT.Controllers
         {
             _authService = authService;
         }
-        [HttpPost("Register")]
-        public async Task<IActionResult> RegisterAsync([FromBody]RegisterModel model)
+        [HttpPost("register")]
+        public async Task<IActionResult> Register([FromBody]RegisterModel model)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
@@ -22,7 +22,22 @@ namespace ApiJWT.Controllers
 
             if(!result.IsAuthenticated)
             {
-                return BadRequest(new { Message = result.Message });
+                return BadRequest(new {result.Message });
+            }
+
+            return Ok(result);
+        }
+
+        [HttpPost("token")]
+        public async Task<IActionResult> GetToken([FromBody] TokenRequestModel model)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+            var result = await _authService.GetTokenAsync(model);
+
+            if (!result.IsAuthenticated)
+            {
+                return BadRequest(new {result.Message });
             }
 
             return Ok(result);
