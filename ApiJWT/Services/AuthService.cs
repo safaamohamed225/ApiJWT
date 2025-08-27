@@ -12,10 +12,12 @@ namespace ApiJWT.Services
     public class AuthService : IAuthService
     {
         private readonly UserManager<ApplicationUser> _userManager;
+        private readonly RoleManager<IdentityRole> _roleManager;
         private readonly JWT _jwt;
-        public AuthService(UserManager<ApplicationUser> userManager, IOptions<JWT> jwt)
+        public AuthService(UserManager<ApplicationUser> userManager,RoleManager<IdentityRole> roleManager, IOptions<JWT> jwt)
         {
             _userManager = userManager;
+            _roleManager = roleManager;
             _jwt = jwt.Value;
         }
         public async Task<AuthModel> RegisterAsync(RegisterModel model)
@@ -112,6 +114,20 @@ namespace ApiJWT.Services
                 signingCredentials: signingCredentials);
 
             return jwtSecurityToken;
+        }
+
+        public async Task<string> AddRoleAsync(AddRoleModel model)
+        {
+            var user = await _userManager.FindByIdAsync(model.UserId);
+            if(user is null || !await _roleManager.RoleExistsAsync(model.Role))
+                return "Invalid User or Role";
+            if(await _userManager.IsInRoleAsync(user, model.Role))
+                return "User already assigned to this role";
+
+            var result= await _userManager.AddToRoleAsync(user, model.Role);
+            return result.Succeeded ? string.Empty : "Something went wrong";
+
+
         }
     }
 }

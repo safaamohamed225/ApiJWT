@@ -42,5 +42,18 @@ namespace ApiJWT.Controllers
 
             return Ok(result);
         }
+
+        [HttpPost("add-role")]
+        public async Task<IActionResult> AddRole([FromBody] AddRoleModel model)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+            var result = await _authService.AddRoleAsync(model);
+
+            if (!string.IsNullOrEmpty(result))
+                return BadRequest(new { Message = result });
+            return Ok(model);
+
+        }
     }
 }
