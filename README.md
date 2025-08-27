@@ -1,6 +1,6 @@
 # 🔐 ASP.NET Core Web API with JWT Authentication
 
-This project is a learning implementation from a course.  
+This repository contains **sample code** from a learning course. 
 It demonstrates how to build a **secure ASP.NET Core Web API** using **JWT (JSON Web Tokens)** for authentication and authorization.  
 
 ---
